@@ -1,0 +1,28 @@
+from selenium.webdriver.support import expected_conditions
+from selenium.webdriver.support.wait import WebDriverWait
+from locators.main_page_locators import BasePageLocators
+from conftest import START_PAGE_LINK, DZEN_PAGE_LINK
+
+
+class BasePageScooter:
+
+    def __init__(self, driver):
+        self.driver = driver
+
+    def click_button_order_header(self):
+        self.driver.find_element(*BasePageLocators.BUTTON_ORDER_HEADER).click()
+
+    def click_logo_scooter(self):
+        self.driver.find_element(*BasePageLocators.LOGO_SCOOTER).click()
+
+    def wait_for_logo_scooter(self):
+        WebDriverWait(self.driver, 3).until(expected_conditions.url_to_be(START_PAGE_LINK))
+
+    def click_logo_yandex(self):
+        self.driver.find_element(*BasePageLocators.LOGO_YANDEX).click()
+
+    def wait_for_new_tab_is_opened(self):
+        WebDriverWait(self.driver, 3).until(expected_conditions.number_of_windows_to_be(2))
+
+    def wait_until_page_is_loaded(self):
+        WebDriverWait(self.driver, 7).until(expected_conditions.url_to_be(DZEN_PAGE_LINK))
