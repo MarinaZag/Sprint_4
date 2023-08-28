@@ -1,7 +1,7 @@
 import allure
 import pytest
-from pages.main_page import BasePageScooter
-from pages.question_page import MainPageScooter
+from pages.base_page import BasePageScooter
+from pages.main_page import MainPageScooter
 from pages.order_page import OrderPageScooter
 from utils import get_random_phone_number, get_current_date, get_next_date
 from conftest import driver
@@ -68,8 +68,8 @@ class TestOrderButtonBasePage:
     @allure.description(
         'В header найти и нажать кнопку "Заказать", заполнить весь флоу позитивного сценария и проверить, что "Заказ оформлен"')
     def test_order_button_base_page_current_date_user_flow_positive(self, driver):
-        open_main_page = MainPageScooter(driver)
-        open_main_page.main_page()
+        main_page = MainPageScooter(driver)
+        main_page.main_url()
         click_button_order = BasePageScooter(driver)
         click_button_order.click_button_order_header()
         new_order = OrderPageScooter(driver)
@@ -92,8 +92,8 @@ class TestOrderButtonBasePage:
     @allure.title('Проверка оформления заказа через кнопку "Заказать" со следующей датой')
     @allure.description('По кликун на кнопку "Заказать", заполнить всю форму позитивного сценария и проверить, что "Заказ оформлен"')
     def test_order_button_base_page_next_date_user_flow_positive(self, driver):
-        open_main_page = MainPageScooter(driver)
-        open_main_page.main_page()
+        main_page = MainPageScooter(driver)
+        main_page.main_url()
         click_button_order = BasePageScooter(driver)
         click_button_order.click_button_order_header()
         new_order = OrderPageScooter(driver)

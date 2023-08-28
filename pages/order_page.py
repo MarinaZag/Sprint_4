@@ -1,111 +1,81 @@
-import time
-
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 from locators.order_page_locators import OrderPageLocators
+from pages.base_page import BasePageScooter
+from data.urls import TestUrls
+import allure
 
 
 class OrderPageScooter:
 
-    def __init__(self, driver):
-        self.driver = driver
-
+    @allure.step('Открыть страницу заказа')
     def order_page(self):
-        self.driver.get('https://qa-scooter.praktikum-services.ru/order')
+        self.start_page(TestUrls.ORDER_PAGE_LINK)
 
-    def wait_for_order_page(self):
-        WebDriverWait(self.driver, 3).until(expected_conditions.url_to_be('https://qa-scooter.praktikum-services.ru/order'))
+    @allure.step('Выбрать станцию метро')  # done
+    def choose_metro_station(self):
+        self.click_element(OrderPageLocators.SCROLLABLE_FIELD_SUBWAY_STATION)
+        self.click_element(OrderPageLocators.METRO_STATION_CLICK)
 
+    @allure.step('Нажать на кнопку Далее')  # done
+    def click_next_button(self):
+        self.find_element(OrderPageLocators.BUTTON_FORWARD)
+        self.click_element(OrderPageLocators.BUTTON_FORWARD)
 
-    def set_name(self, name):
-        self.driver.find_element(*OrderPageLocators.FIELD_NAME).send_keys(name)
-
-    def set_surname(self, surname):
-        self.driver.find_element(*OrderPageLocators.FIELD_SURNAME).send_keys(surname)
-
-    def set_address(self, address):
-        self.driver.find_element(*OrderPageLocators.FIELD_ADDRESS).send_keys(address)
-
-    def set_subway_station(self, station):
-        self.driver.find_element(*OrderPageLocators.FIELD_SUBWAY_STATION).send_keys(station)
-        WebDriverWait(self.driver, 3).until(expected_conditions.visibility_of_element_located(OrderPageLocators.SCROLLABLE_FIELD_SUBWAY_STATION))
-        self.click_scrollable_subway_station()
-
-    def click_scrollable_subway_station(self):
-        self.driver.find_element(*OrderPageLocators.SCROLLABLE_FIELD_SUBWAY_STATION).click()
-        WebDriverWait(self.driver, 3).until(expected_conditions.invisibility_of_element(OrderPageLocators.SCROLLABLE_FIELD_SUBWAY_STATION))
-
-    def set_phone_number(self, number):
-        self.driver.find_element(*OrderPageLocators.FIELD_PHONE).send_keys(number)
-        WebDriverWait(self.driver, 3).until(expected_conditions.visibility_of_element_located(OrderPageLocators.FIELD_PHONE))
-
-    def click_button_forward(self):
-        WebDriverWait(self.driver, 3).until(expected_conditions.element_to_be_clickable(OrderPageLocators.BUTTON_FORWARD))
-        self.driver.find_element(*OrderPageLocators.BUTTON_FORWARD).click()
-
-    def filling_form_one(self, name, surname, address, station, number):
-        self.set_name(name)
-        self.set_surname(surname)
-        self.set_address(address)
-        self.set_subway_station(station)
-        self.set_phone_number(number)
+    @allure.step('Заполнить поля в форме "Для кого самокат?"')  # DONE
+    def filling_form_one(self, name=BasePageScooter.set_name(), surname=BasePageScooter.set_surname(),
+                         address=BasePageScooter.set_address(),
+                         number=BasePageScooter.set_phone_number()):  # заполнение формы Для кого самокат
+        self.add_value(OrderPageLocators.FIELD_NAME, name)
+        self.add_value(OrderPageLocators.FIELD_SURNAME, surname)
+        self.add_value(OrderPageLocators.FIELD_ADDRESS, address)
+        self.choose_metro_station()
+        self.add_value(OrderPageLocators.FIELD_PHONE, number)
         self.click_button_forward()
 
-    def wait_for_form_two(self):
-        WebDriverWait(self.driver, 3).until(expected_conditions.visibility_of_element_located(OrderPageLocators.FORM_TWO))
-
+    @allure.step('Выбрать дату "Когда привезти самокат?"')
     def set_date(self, date):
-        self.driver.find_element(*OrderPageLocators.FIELD_CALENDAR).send_keys(date)
-        WebDriverWait(self.driver, 3).until(expected_conditions.visibility_of_element_located(OrderPageLocators.CALENDAR))
-        self.driver.find_element(*OrderPageLocators.DATE_PICKER_DAY_SELECTED).click()
-        WebDriverWait(self.driver, 3).until(expected_conditions.invisibility_of_element(OrderPageLocators.CALENDAR))
+        self.find_element(OrderPageLocators.FIELD_CALENDAR).send_keys(date)
+        self.wait_visibility_element(OrderPageLocators.CALENDAR) # Ждем пока появится календарь
+        self.click_element(OrderPageLocators.DATE_PICKER_DAY_SELECTED)
 
-    def select_rental_period(self, period_locator):
-        self.driver.find_element(*OrderPageLocators.FIELD_RENTAL_PERIOD).click()
-        WebDriverWait(self.driver, 5).until(expected_conditions.visibility_of_element_located(OrderPageLocators.MENU_RENTAL_PERIOD))
-        self.driver.find_element(*period_locator).click()
-        WebDriverWait(self.driver, 5).until(expected_conditions.invisibility_of_element(OrderPageLocators.MENU_RENTAL_PERIOD))
+    @ allure.step('Выбрать срок аренды')
+    def select_rental_period(self):
+        self.click_element(OrderPageLocators.FIELD_RENTAL_PERIOD)
+        self.click_element(OrderPageLocators.CHOICE_RENT_PERIOD)
 
+    @allure.step('Выбрать черный самокат')
     def click_checkbox_black(self):
-        self.driver.find_element(*OrderPageLocators.CHECKBOX_BLACK).click()
+        self.click_element(*OrderPageLocators.CHECKBOX_BLACK)
 
+    @allure.step('Выбрать серый самокат')
     def click_checkbox_grey(self):
-        self.driver.find_element(*OrderPageLocators.CHECKBOX_GREY).click()
+        self.click_element(*OrderPageLocators.CHECKBOX_GREY)
 
-    def set_comment(self, comment):
-        self.driver.find_element(*OrderPageLocators.FIELD_COMMENT).send_keys(comment)
-
+    @allure.step('Кликнуть на кнопку "Заказать"')
     def click_button_order(self):
-        WebDriverWait(self.driver, 3).until(expected_conditions.element_to_be_clickable(OrderPageLocators.BUTTON_ORDER))
-        self.driver.find_element(*OrderPageLocators.BUTTON_ORDER).click()
+        self.click_element(OrderPageLocators.BUTTON_ORDER)
 
-    def filling_form_about_rent_one_flow(self, date, comment):
+    @allure.step('Подтвердить заказ')
+    def confirm_order(self):
+        self.click_element(OrderPageLocators.BUTTON_CONFIRMATION_ORDER)
+
+    @allure.step('Заполнить поля в форме "Про аренду"')
+    def filling_form_about_rent_one_flow(self, date, comment):  # заполнение формы Про аренду 1
         self.set_date(date)
         self.select_rental_period(OrderPageLocators.RENTAL_PERIOD_DAY)
         self.click_checkbox_grey()
         self.set_comment(comment)
         self.click_button_order()
 
-    def filling_form_about_rent_two_flow(self, date, comment):
+    @allure.step('Заполнить поля в форме "Про аренду"')
+    def filling_form_about_rent_two_flow(self, date, comment):  # заполнение формы Про аренду 2
         self.set_date(date)
         self.select_rental_period(OrderPageLocators.RENTAL_PERIOD_SEVEN_DAYS)
         self.click_checkbox_black()
         self.set_comment(comment)
         self.click_button_order()
 
-    def wait_for_form_three(self):
-        WebDriverWait(self.driver, 3).until(expected_conditions.visibility_of_element_located(OrderPageLocators.FORM_THREE))
-
-    def click_confirmation_order(self):
-        self.driver.find_element(*OrderPageLocators.BUTTON_CONFIRMATION_ORDER).click()
-
-    def wait_for_window_order_is_placed(self):
-        WebDriverWait(self.driver, 3).until(expected_conditions.visibility_of_element_located(OrderPageLocators.WINDOW_ORDER_IS_PLACED))
-
-    def get_new_order_title(self):
-        new_order_text = self.driver.find_element(*OrderPageLocators.WINDOW_ORDER_IS_PLACED).text
-        result = new_order_text.split('\n')
-        return result[0]
-
+    @allure.step('Посмотреть статус заказа')
     def click_button_view_status(self):
         self.driver.find_element(*OrderPageLocators.BUTTON_VIEW_STATUS).click()

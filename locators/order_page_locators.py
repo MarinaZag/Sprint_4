@@ -15,12 +15,7 @@ class OrderPageLocators:
     FIELD_RENTAL_PERIOD = By.XPATH, "//div[@class='Dropdown-root']"  # поле
     MENU_RENTAL_PERIOD = By.XPATH, "//div[@class='Dropdown-menu']"
     RENTAL_PERIOD_DAY = By.XPATH, "//div[contains(@class, 'Dropdown-option') and (text()='сутки')]"  # сутки
-    RENTAL_PERIOD_TWO_DAYS = By.XPATH, "//div[contains(@class, 'Dropdown-option') and (text()='двое суток')]"
-    RENTAL_PERIOD_THREE_DAYS = By.XPATH, "//div[contains(@class, 'Dropdown-option') and (text()='трое суток')]"
-    RENTAL_PERIOD_FOUR_DAYS = By.XPATH, "//div[contains(@class, 'Dropdown-option') and (text()='четверо суток')]"
-    RENTAL_PERIOD_FIVE_DAYS = By.XPATH, "//div[contains(@class, 'Dropdown-option') and (text()='пятеро суток')]"
-    RENTAL_PERIOD_SIX_DAYS = By.XPATH, "//div[contains(@class, 'Dropdown-option') and (text()='шестеро суток')]"
-    RENTAL_PERIOD_SEVEN_DAYS = By.XPATH, "//div[contains(@class, 'Dropdown-option') and (text()='семеро суток')]"
+    CHOICE_RENT_PERIOD = By.XPATH, ".//div[text() = 'трое суток']"
     CHECKBOX_BLACK = By.XPATH, "//div[starts-with(@class, 'Order_Checkboxes')]/*/input[@id='black']"
     CHECKBOX_GREY = By.XPATH, "//div[starts-with(@class, 'Order_Checkboxes')]/*/input[@id='grey']"
     FIELD_COMMENT = By.XPATH, "//input[contains(@placeholder, 'Комментарий для курьера')]"
@@ -30,3 +25,5 @@ class OrderPageLocators:
     WINDOW_ORDER_IS_PLACED = By.XPATH, "//div[contains(@class, 'Order_ModalHeader')]"
     BUTTON_VIEW_STATUS = By.XPATH, "//button[contains(text(), 'Посмотреть статус')]"
     DATE_PICKER_DAY_SELECTED = By.XPATH, "//div[contains(@class, 'react-datepicker__week')]/div[contains(@class, 'react-datepicker__day--selected')]"
+
+    METRO_STATION_CLICK = By.XPATH, ".//button[@value = '1']"
